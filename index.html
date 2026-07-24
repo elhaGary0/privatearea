@@ -3,304 +3,476 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>محادثة خاصة</title>
-    <!-- استدعاء Tailwind CSS للتصميم -->
+    <title>System Gateway Portal</title> <!-- تم تغيير الاسم للتمويه -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* إخفاء شريط التمرير مع الاحتفاظ بالوظيفة */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* أنيميشن التسجيل */
+        @keyframes pulse-red {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-        .no-scrollbar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
+        .recording { animation: pulse-red 1.5s infinite; background-color: #ef4444; color: white; }
     </style>
 </head>
-<body class="bg-gray-100 h-screen overflow-hidden selection:bg-blue-200">
+<body class="bg-[#0f172a] h-screen w-screen overflow-hidden text-slate-200 font-sans selection:bg-blue-500">
 
-    <div id="loginScreen" class="flex items-center justify-center h-full w-full p-4 absolute z-50 bg-gray-100 transition-opacity duration-300">
-        <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-sm">
-            <div class="flex justify-center mb-6">
-                <div class="bg-blue-100 p-4 rounded-full">
-                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                </div>
+    <!-- شاشة الدخول المموهة (تبدو كلوحة تحكم سيرفر) -->
+    <div id="loginScreen" class="flex flex-col items-center justify-center h-full w-full absolute z-50 bg-[#0f172a] transition-opacity duration-500 p-6">
+        <div class="w-full max-w-sm border border-slate-700 bg-slate-800/50 p-8 rounded-lg shadow-2xl backdrop-blur-sm">
+            <div class="flex flex-col items-center mb-8">
+                <svg class="w-12 h-12 text-blue-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
+                <h2 class="text-xl font-mono tracking-widest text-slate-300 uppercase">Secure Gateway</h2>
+                <p class="text-xs text-slate-500 font-mono mt-1">Node Access Terminal v2.4</p>
             </div>
-            <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">الدخول السري</h2>
             
-            <div id="errorMessage" class="hidden mb-4 p-3 bg-red-100 text-red-700 rounded-xl text-sm text-center"></div>
+            <div id="errorMessage" class="hidden mb-4 p-3 bg-red-900/50 border border-red-500/50 text-red-200 rounded text-xs text-center font-mono"></div>
             
-            <form id="loginForm" class="space-y-4">
+            <form id="loginForm" class="space-y-5">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">اسمك</label>
-                    <input type="text" id="usernameInput" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all" placeholder="اكتب اسمك هنا" required>
+                    <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Node ID</label>
+                    <input type="text" id="usernameInput" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded text-slate-200 focus:border-blue-500 outline-none font-mono text-sm" placeholder="e.g. root" required autocomplete="off">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
-                    <input type="password" id="passwordInput" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all" placeholder="كلمة المرور المشتركة" required>
+                    <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Auth Key</label>
+                    <input type="password" id="passwordInput" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded text-slate-200 focus:border-blue-500 outline-none font-mono text-sm" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-lg shadow-blue-200 mt-4">
-                    دخول للمحادثة
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-mono uppercase text-sm font-bold py-3 px-4 rounded transition-colors mt-2">
+                    Initialize Connection
                 </button>
             </form>
         </div>
+        <div class="mt-8 text-xs text-slate-600 font-mono">End-to-End Encrypted Tunnel</div>
     </div>
 
-    <div id="chatScreen" class="hidden flex-col h-full max-w-md mx-auto bg-gray-50 sm:shadow-2xl relative">
-        <!-- Header -->
-        <div class="bg-white px-4 py-4 flex items-center justify-between shadow-sm z-20">
+    <!-- شاشة المحادثة -->
+    <div id="chatScreen" class="hidden flex-col h-full w-full max-w-2xl mx-auto bg-[#efeae2] relative shadow-2xl">
+        <!-- الهيدر (رأس الدردشة) -->
+        <div class="bg-[#008069] px-4 py-3 flex items-center justify-between shadow-md z-20 text-white">
             <div class="flex items-center gap-3">
-                <div id="userAvatar" class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-full flex items-center justify-center text-white font-bold shadow-md">
-                    م
+                <div class="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-slate-600 font-bold overflow-hidden">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                 </div>
-                <div>
-                    <h1 class="font-bold text-gray-800 text-lg">الدردشة الخاصة</h1>
-                    <p class="text-xs text-green-500 font-medium flex items-center gap-1">
-                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> متصل
-                    </p>
+                <div class="flex flex-col">
+                    <h1 class="font-bold text-[16px] leading-tight" id="chatTitle">الدردشة الخاصة</h1>
+                    <p class="text-[12px] text-green-100" id="statusText">جاري الاتصال...</p>
                 </div>
             </div>
-            <button id="logoutBtn" class="text-gray-400 hover:text-red-500 transition-colors p-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-            </button>
-        </div>
-
-        <!-- Messages Area -->
-        <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar pb-20">
-            <div class="text-center text-gray-400 mt-10 text-sm">
-                جاري تحميل الرسائل...
+            <div class="flex gap-4">
+                <button id="logoutBtn" class="text-white/80 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </button>
             </div>
         </div>
 
-        <!-- Emoji Panel -->
-        <div id="emojiPanel" class="hidden absolute bottom-[72px] left-0 w-full bg-white border-t border-gray-100 p-4 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] z-10 transition-transform duration-300">
-            <div class="grid grid-cols-6 gap-3 max-h-40 overflow-y-auto no-scrollbar" id="emojiGrid">
-                <!-- Emojis will be injected here via JS -->
-            </div>
+        <!-- منطقة الرسائل -->
+        <!-- خلفية الشات تشبه واتساب -->
+        <div class="absolute inset-0 z-0 opacity-[0.06] pointer-events-none" style="background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat;"></div>
+        
+        <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar pb-24 z-10">
+            <!-- سيتم حقن الرسائل هنا -->
         </div>
 
-        <!-- Input Area -->
-        <div class="bg-white border-t border-gray-100 p-3 absolute bottom-0 w-full z-20">
-            <form id="messageForm" class="flex items-center gap-2">
-                <button type="button" id="emojiBtn" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <!-- لوحة الإيموجي والمرفقات -->
+        <div id="emojiPanel" class="hidden absolute bottom-[70px] left-0 w-full bg-[#f0f2f5] border-t border-gray-300 p-2 z-10 transition-all shadow-lg h-64 flex-col">
+            <div class="flex gap-2 p-2 bg-white rounded-lg mb-2 shadow-sm sticky top-0">
+                <button class="flex-1 text-sm font-bold text-gray-500 hover:text-blue-500 py-1 border-b-2 border-blue-500">الوجوه</button>
+            </div>
+            <div class="grid grid-cols-7 sm:grid-cols-10 gap-2 overflow-y-auto no-scrollbar p-1 pb-4" id="emojiGrid"></div>
+        </div>
+
+        <!-- شريط الإدخال -->
+        <div class="bg-[#f0f2f5] p-2 absolute bottom-0 w-full z-20">
+            <!-- مؤشر جاري التحميل للصور/الصوت -->
+            <div id="uploadProgress" class="hidden w-full bg-gray-200 rounded-full h-1 mb-2">
+                <div id="progressBar" class="bg-blue-600 h-1 rounded-full w-0 transition-all duration-300"></div>
+            </div>
+
+            <form id="messageForm" class="flex items-end gap-2">
+                <!-- زر الإيموجي -->
+                <button type="button" id="emojiBtn" class="p-3 text-gray-500 hover:text-gray-700 transition-colors">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </button>
                 
-                <input type="text" id="messageInput" class="flex-1 bg-gray-100 rounded-full px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all text-sm" placeholder="اكتب رسالتك..." autocomplete="off">
-                
-                <button type="submit" id="sendBtn" class="w-11 h-11 flex items-center justify-center bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-md disabled:opacity-50" disabled>
-                    <svg class="w-5 h-5 rtl:rotate-180 -ml-1 rtl:ml-0 rtl:-mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                <!-- زر المرفقات (صورة/فيديو) -->
+                <button type="button" id="attachBtn" class="p-3 text-gray-500 hover:text-gray-700 transition-colors relative">
+                    <svg class="w-6 h-6 transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                    <input type="file" id="fileInput" accept="image/*,video/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer hidden">
                 </button>
+                
+                <div class="flex-1 bg-white rounded-3xl flex items-center min-h-[44px] shadow-sm px-2">
+                    <textarea id="messageInput" class="w-full bg-transparent resize-none px-2 py-3 focus:outline-none text-[15px] max-h-24 no-scrollbar text-gray-800" placeholder="المراسلة..." rows="1" dir="auto"></textarea>
+                </div>
+                
+                <!-- زر الإرسال أو المايك (يتغير حسب الكتابة) -->
+                <div class="flex items-center justify-center w-12 h-12">
+                    <button type="submit" id="sendBtn" class="hidden w-11 h-11 bg-[#00a884] text-white rounded-full flex items-center justify-center hover:bg-[#008f6f] shadow-md transition-transform active:scale-95">
+                        <svg class="w-5 h-5 rtl:-scale-x-100 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                    </button>
+                    
+                    <button type="button" id="micBtn" class="w-11 h-11 bg-[#00a884] text-white rounded-full flex items-center justify-center hover:bg-[#008f6f] shadow-md transition-all active:scale-95">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"></path></svg>
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
     <script type="module">
-        // =========================================================================
-        // 1. إعدادات التطبيق الأساسية (قم بتغيير كلمة المرور من هنا)
-        // =========================================================================
-        const APP_PASSWORD = "123"; // 🔴 ضع الباسورد الذي تريده هنا
+        // ==========================================
+        // الإعدادات والباسورد
+        // ==========================================
+        const APP_PASSWORD = "123"; 
 
-        // =========================================================================
-        // 2. استدعاء مكتبات Firebase
-        // =========================================================================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
-        // =========================================================================
-        // 3. إعدادات Firebase الخاصة بك (ستحصل عليها من موقع Firebase)
-        // =========================================================================
-        // 🔴 استبدل القيم الموجودة بين الأقواس ببيانات مشروعك الحقيقية لاحقاً
-        const isPreview = typeof window.__firebase_config !== 'undefined';
-      const firebaseConfig = {
-  apiKey: "AIzaSyDPb9Do2T5rBkuGWEYecHrnFG3ePcxWln8",
-  authDomain: "myprivatechat-6b6b6.firebaseapp.com",
-  projectId: "myprivatechat-6b6b6",
-  storageBucket: "myprivatechat-6b6b6.firebasestorage.app",
-  messagingSenderId: "717975093359",
-  appId: "1:717975093359:web:e4435d2751f4c4465f4d9a",
-  measurementId: "G-DWDZQ332VS"
-};
+        // إعداداتك كما أرسلتها
+        const firebaseConfig = {
+            apiKey: "AIzaSyDPb9Do2T5rBkuGWEYecHrnFG3ePcxWln8",
+            authDomain: "myprivatechat-6b6b6.firebaseapp.com",
+            projectId: "myprivatechat-6b6b6",
+            storageBucket: "myprivatechat-6b6b6.firebasestorage.app",
+            messagingSenderId: "717975093359",
+            appId: "1:717975093359:web:e4435d2751f4c4465f4d9a",
+            measurementId: "G-DWDZQ332VS"
+        };
 
-        // تهيئة Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
         
-        // تحديد مسار حفظ الرسائل
-        const appId = typeof window.__app_id !== 'undefined' ? window.__app_id : 'my-private-chat';
-        const messagesRef = isPreview 
-            ? collection(db, 'artifacts', appId, 'public', 'data', 'messages') 
-            : collection(db, "messages"); // المسار الفعلي على موقعك
+        const messagesRef = collection(db, "messages");
+        const presenceRef = collection(db, "presence");
 
-        // =========================================================================
-        // 4. متغيرات الواجهة وحالة التطبيق
-        // =========================================================================
+        // المتغيرات الأساسية
         let currentUser = "";
-        
-        const loginScreen = document.getElementById('loginScreen');
-        const chatScreen = document.getElementById('chatScreen');
-        const loginForm = document.getElementById('loginForm');
-        const usernameInput = document.getElementById('usernameInput');
-        const passwordInput = document.getElementById('passwordInput');
-        const errorMessage = document.getElementById('errorMessage');
-        const userAvatar = document.getElementById('userAvatar');
-        
-        const messagesContainer = document.getElementById('messagesContainer');
-        const messageForm = document.getElementById('messageForm');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        
-        const emojiBtn = document.getElementById('emojiBtn');
-        const emojiPanel = document.getElementById('emojiPanel');
-        const emojiGrid = document.getElementById('emojiGrid');
+        let otherUser = ""; // لحفظ اسم الطرف الآخر
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
 
-        // قائمة الإيموجي
-        const EMOJIS = ['😀','😂','🥰','😎','🥺','😭','😡','👍','❤️','🔥','✨','🎉','🙏','👀','💯','💡','🤦‍♂️','🤷‍♂️'];
+        // عناصر الواجهة
+        const els = {
+            loginScreen: document.getElementById('loginScreen'),
+            chatScreen: document.getElementById('chatScreen'),
+            loginForm: document.getElementById('loginForm'),
+            usernameInput: document.getElementById('usernameInput'),
+            passwordInput: document.getElementById('passwordInput'),
+            errorMsg: document.getElementById('errorMessage'),
+            msgContainer: document.getElementById('messagesContainer'),
+            msgForm: document.getElementById('messageForm'),
+            msgInput: document.getElementById('messageInput'),
+            sendBtn: document.getElementById('sendBtn'),
+            micBtn: document.getElementById('micBtn'),
+            attachBtn: document.getElementById('attachBtn'),
+            fileInput: document.getElementById('fileInput'),
+            emojiBtn: document.getElementById('emojiBtn'),
+            emojiPanel: document.getElementById('emojiPanel'),
+            emojiGrid: document.getElementById('emojiGrid'),
+            statusText: document.getElementById('statusText'),
+            progressBox: document.getElementById('uploadProgress'),
+            progressBar: document.getElementById('progressBar')
+        };
 
-        // =========================================================================
-        // 5. وظائف تسجيل الدخول والخروج
-        // =========================================================================
-        loginForm.addEventListener('submit', (e) => {
+        // مكتبة إيموجي ضخمة
+        const EMOJI_LIST = [
+            '😀','😃','😄','😁','😆','😅','😂','🤣','🥲','☺️','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾',
+            '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❤️‍🔥','❤️‍🩹','❣️','💕','💞','💓','💗','💖','💘','💝',
+            '👍','👎','👏','🙌','👐','🤲','🤝','🤜','🤛','✊','👊','🖐️','✋','🤚','👋','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','💪','🦾','🦵','🦿','🦶','👣'
+        ];
+
+        // بناء الإيموجي
+        EMOJI_LIST.forEach(emoji => {
+            const span = document.createElement('span');
+            span.className = 'text-2xl cursor-pointer hover:bg-gray-200 p-1 rounded text-center';
+            span.textContent = emoji;
+            span.onclick = () => { els.msgInput.value += emoji; toggleSendMicBtn(); els.msgInput.focus(); };
+            els.emojiGrid.appendChild(span);
+        });
+
+        // ==========================================
+        // تسجيل الدخول
+        // ==========================================
+        els.loginForm.onsubmit = (e) => {
             e.preventDefault();
-            const name = usernameInput.value.trim();
-            const pass = passwordInput.value;
+            const name = els.usernameInput.value.trim();
+            const pass = els.passwordInput.value;
 
             if (pass === APP_PASSWORD && name !== "") {
                 currentUser = name;
-                userAvatar.textContent = name.charAt(0).toUpperCase();
-                loginScreen.classList.add('opacity-0', 'pointer-events-none');
+                els.loginScreen.classList.add('opacity-0');
                 setTimeout(() => {
-                    loginScreen.classList.add('hidden');
-                    chatScreen.classList.remove('hidden');
-                    chatScreen.classList.add('flex');
-                    loadMessages(); // بدء جلب الرسائل
-                }, 300);
+                    els.loginScreen.classList.add('hidden');
+                    els.chatScreen.classList.remove('hidden');
+                    els.chatScreen.classList.add('flex');
+                    initChat();
+                }, 500);
             } else {
-                errorMessage.textContent = "كلمة المرور خاطئة!";
-                errorMessage.classList.remove('hidden');
+                els.errorMsg.textContent = "ACCESS DENIED. INVALID CREDENTIALS.";
+                els.errorMsg.classList.remove('hidden');
             }
-        });
+        };
 
-        logoutBtn.addEventListener('click', () => {
-            location.reload(); // إعادة تحميل الصفحة للخروج
-        });
+        document.getElementById('logoutBtn').onclick = () => location.reload();
 
-        // =========================================================================
-        // 6. وظائف الدردشة وإرسال الرسائل (Firebase)
-        // =========================================================================
-        let unsubscribe = null;
+        // ==========================================
+        // تهيئة الشات وحالة الاتصال
+        // ==========================================
+        function initChat() {
+            updatePresence();
+            setInterval(updatePresence, 60000); // تحديث التواجد كل دقيقة
+            
+            // مراقبة حالة الطرف الآخر
+            onSnapshot(collection(db, "presence"), (snapshot) => {
+                snapshot.forEach(doc => {
+                    if(doc.id !== currentUser) {
+                        otherUser = doc.id;
+                        const data = doc.data();
+                        const lastSeen = data.lastSeen ? data.lastSeen.toDate() : new Date();
+                        const now = new Date();
+                        const diffMins = Math.floor((now - lastSeen) / 60000);
+                        
+                        if(diffMins < 2) {
+                            els.statusText.textContent = "متصل الآن";
+                            els.statusText.className = "text-[12px] text-green-300";
+                        } else {
+                            els.statusText.textContent = `آخر ظهور منذ ${diffMins} دقيقة`;
+                            els.statusText.className = "text-[12px] text-gray-200";
+                        }
+                    }
+                });
+            });
 
+            loadMessages();
+        }
+
+        async function updatePresence() {
+            if(currentUser) {
+                await setDoc(doc(db, "presence", currentUser), { lastSeen: serverTimestamp() });
+            }
+        }
+
+        // ==========================================
+        // جلب وعرض الرسائل (ومؤشر القراءة)
+        // ==========================================
         function loadMessages() {
-            // جلب الرسائل وترتيبها حسب الوقت
             const q = query(messagesRef, orderBy("timestamp", "asc"));
             
-            unsubscribe = onSnapshot(q, (snapshot) => {
-                messagesContainer.innerHTML = ''; // مسح الرسائل القديمة عند كل تحديث
+            onSnapshot(q, (snapshot) => {
+                els.msgContainer.innerHTML = '';
                 
-                if (snapshot.empty) {
-                    messagesContainer.innerHTML = '<div class="text-center text-gray-400 mt-10 text-sm">ابدأ المحادثة الآن!</div>';
-                    return;
-                }
-
-                snapshot.forEach((doc) => {
-                    const msg = doc.data();
+                snapshot.forEach((docSnap) => {
+                    const msg = docSnap.data();
+                    const msgId = docSnap.id;
                     const isMe = msg.sender === currentUser;
-                    const date = msg.timestamp ? new Date(msg.timestamp) : new Date();
-                    const timeString = date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-
-                    const msgDiv = document.createElement('div');
-                    msgDiv.className = `flex flex-col w-full ${isMe ? 'items-start' : 'items-end'}`;
                     
-                    msgDiv.innerHTML = `
-                        <span class="text-[10px] text-gray-400 mb-1 mx-2 font-medium">${msg.sender}</span>
-                        <div class="max-w-[85%] px-4 py-2.5 text-[15px] shadow-sm ${
-                            isMe 
-                            ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm' 
-                            : 'bg-white border border-gray-100 text-gray-800 rounded-2xl rounded-tl-sm'
-                        }">
-                            <p class="break-words leading-relaxed">${escapeHTML(msg.text)}</p>
-                        </div>
-                        <span class="text-[10px] text-gray-400 mt-1 mx-2">${timeString}</span>
-                    `;
-                    messagesContainer.appendChild(msgDiv);
+                    // إذا لم تكن رسالتي ولم تُقرأ بعد، علمها كمقروءة
+                    if (!isMe && !msg.seen) {
+                        updateDoc(doc(db, "messages", msgId), { seen: true });
+                    }
+
+                    renderMessage(msg, isMe);
                 });
                 
-                // التمرير التلقائي لأسفل
-                scrollToBottom();
+                els.msgContainer.scrollTo(0, els.msgContainer.scrollHeight);
             });
         }
 
-        messageForm.addEventListener('submit', async (e) => {
+        function renderMessage(msg, isMe) {
+            const timeString = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) : '';
+            
+            // علامتي الصح (صح واحد = رمادي, صحين أزرق = مقروء)
+            let seenStatus = '';
+            if (isMe) {
+                if (msg.seen) {
+                    seenStatus = `<svg class="w-4 h-4 text-blue-500 inline ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"></path></svg>`;
+                } else {
+                    seenStatus = `<svg class="w-4 h-4 text-gray-400 inline ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg>`;
+                }
+            }
+
+            let contentHTML = '';
+            if (msg.type === 'text') {
+                contentHTML = `<p class="break-words text-[15px] leading-relaxed whitespace-pre-wrap">${escapeHTML(msg.text)}</p>`;
+            } else if (msg.type === 'image') {
+                contentHTML = `<img src="${msg.url}" class="rounded-lg max-w-full h-auto mb-1 cursor-pointer" onclick="window.open('${msg.url}')">`;
+                if(msg.text) contentHTML += `<p class="text-sm mt-1">${escapeHTML(msg.text)}</p>`;
+            } else if (msg.type === 'video') {
+                contentHTML = `<video src="${msg.url}" controls class="rounded-lg max-w-full h-auto mb-1"></video>`;
+            } else if (msg.type === 'audio') {
+                contentHTML = `<audio src="${msg.url}" controls class="w-48 h-10"></audio>`;
+            }
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `flex w-full mb-1 ${isMe ? 'justify-end' : 'justify-start'}`;
+            
+            // تصميم فقاعة الواتساب
+            const bubbleStyle = isMe 
+                ? 'bg-[#dcf8c6] text-gray-800 rounded-lg rounded-tr-none shadow-sm' 
+                : 'bg-white text-gray-800 rounded-lg rounded-tl-none shadow-sm';
+
+            msgDiv.innerHTML = `
+                <div class="max-w-[85%] relative px-2.5 pt-2 pb-1.5 ${bubbleStyle}">
+                    ${contentHTML}
+                    <div class="flex items-center justify-end gap-1 mt-1">
+                        <span class="text-[11px] text-gray-500">${timeString}</span>
+                        ${seenStatus}
+                    </div>
+                </div>
+            `;
+            els.msgContainer.appendChild(msgDiv);
+        }
+
+        // ==========================================
+        // إرسال النصوص والمرفقات
+        // ==========================================
+        els.msgInput.addEventListener('input', () => {
+            els.msgInput.style.height = 'auto';
+            els.msgInput.style.height = (els.msgInput.scrollHeight) + 'px';
+            toggleSendMicBtn();
+        });
+
+        function toggleSendMicBtn() {
+            const hasText = els.msgInput.value.trim().length > 0;
+            if (hasText) {
+                els.micBtn.classList.add('hidden');
+                els.sendBtn.classList.remove('hidden');
+            } else {
+                els.micBtn.classList.remove('hidden');
+                els.sendBtn.classList.add('hidden');
+            }
+        }
+
+        els.msgForm.onsubmit = async (e) => {
             e.preventDefault();
-            const text = messageInput.value.trim();
+            const text = els.msgInput.value.trim();
             if (!text) return;
 
-            // تفريغ الحقل فوراً لتحسين تجربة المستخدم
-            messageInput.value = '';
-            sendBtn.disabled = true;
-            emojiPanel.classList.add('hidden');
+            els.msgInput.value = '';
+            els.msgInput.style.height = 'auto';
+            toggleSendMicBtn();
+            els.emojiPanel.classList.add('hidden');
 
+            await sendMessage({ type: 'text', text: text });
+        };
+
+        async function sendMessage(data) {
             try {
-                // إرسال الرسالة إلى Firebase
                 await addDoc(messagesRef, {
-                    text: text,
+                    ...data,
                     sender: currentUser,
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    seen: false
                 });
-            } catch (error) {
-                console.error("خطأ في الإرسال:", error);
-                alert("حدث خطأ أثناء إرسال الرسالة");
+                updatePresence(); // تحديث التواجد عند الإرسال
+            } catch (err) {
+                alert("خطأ في الإرسال");
+                console.error(err);
             }
-        });
-
-        // =========================================================================
-        // 7. تحسينات واجهة المستخدم (إيموجي، تمرير، إدخال)
-        // =========================================================================
-        
-        // تفعيل زر الإرسال عند الكتابة
-        messageInput.addEventListener('input', () => {
-            sendBtn.disabled = messageInput.value.trim().length === 0;
-        });
-
-        // بناء لوحة الإيموجي
-        EMOJIS.forEach(emoji => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'text-2xl hover:bg-gray-100 p-2 rounded-xl transition-colors text-center';
-            btn.textContent = emoji;
-            btn.onclick = () => {
-                messageInput.value += emoji;
-                sendBtn.disabled = false;
-                messageInput.focus();
-            };
-            emojiGrid.appendChild(btn);
-        });
-
-        // إظهار/إخفاء الإيموجي
-        emojiBtn.addEventListener('click', () => {
-            emojiPanel.classList.toggle('hidden');
-        });
-
-        // التمرير لأسفل
-        function scrollToBottom() {
-            messagesContainer.scrollTo({
-                top: messagesContainer.scrollHeight,
-                behavior: 'smooth'
-            });
         }
 
-        // حماية بسيطة ضد ثغرات XSS
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    "'": '&#39;',
-                    '"': '&quot;'
-                }[tag])
+        // ==========================================
+        // رفع الصور والفيديو
+        // ==========================================
+        els.attachBtn.onclick = () => {
+            els.fileInput.click();
+        };
+
+        els.fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const type = file.type.startsWith('video') ? 'video' : 'image';
+            uploadFile(file, type);
+        };
+
+        // ==========================================
+        // تسجيل الصوت (Voice Notes)
+        // ==========================================
+        els.micBtn.onclick = async () => {
+            if (isRecording) {
+                // إيقاف التسجيل
+                mediaRecorder.stop();
+                els.micBtn.classList.remove('recording');
+                isRecording = false;
+            } else {
+                // بدء التسجيل
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    
+                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                    
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        // إيقاف المايك في المتصفح
+                        stream.getTracks().forEach(track => track.stop());
+                        uploadFile(audioBlob, 'audio', 'voice_record.webm');
+                    };
+                    
+                    mediaRecorder.start();
+                    els.micBtn.classList.add('recording');
+                    isRecording = true;
+                } catch (err) {
+                    alert("الرجاء السماح بصلاحية الميكروفون للتسجيل");
+                    console.error(err);
+                }
+            }
+        };
+
+        // ==========================================
+        // دالة الرفع (Upload function) المشتركة
+        // ==========================================
+        function uploadFile(file, type, customName) {
+            const fileName = customName || file.name;
+            const fileRef = ref(storage, `uploads/${Date.now()}_${fileName}`);
+            const uploadTask = uploadBytesResumable(fileRef, file);
+
+            els.progressBox.classList.remove('hidden');
+            els.progressBar.style.width = '0%';
+
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    els.progressBar.style.width = progress + '%';
+                }, 
+                (error) => {
+                    alert('فشل رفع الملف');
+                    els.progressBox.classList.add('hidden');
+                }, 
+                async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    els.progressBox.classList.add('hidden');
+                    // إضافة مربع نص اختياري للصور
+                    let caption = '';
+                    if(type === 'image') {
+                        // تفريغ مربع النص لو كان فيه كلام وأرسل صورة معاه
+                        caption = els.msgInput.value.trim();
+                        els.msgInput.value = '';
+                        toggleSendMicBtn();
+                    }
+                    await sendMessage({ type: type, url: downloadURL, text: caption });
+                }
             );
+        }
+
+        // ==========================================
+        // وظائف إضافية
+        // ==========================================
+        els.emojiBtn.onclick = () => {
+            els.emojiPanel.classList.toggle('hidden');
+        };
+
+        function escapeHTML(str) {
+            if(!str) return '';
+            return str.replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag]));
         }
     </script>
 </body>
