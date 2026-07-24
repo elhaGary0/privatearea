@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>System Gateway Portal</title> <!-- تم تغيير الاسم للتمويه -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -17,7 +17,7 @@
         .recording { animation: pulse-red 1.5s infinite; background-color: #ef4444; color: white; }
     </style>
 </head>
-<body class="bg-[#0f172a] h-screen w-screen overflow-hidden text-slate-200 font-sans selection:bg-blue-500">
+<body class="bg-[#0f172a] h-[100dvh] w-screen overflow-hidden text-slate-200 font-sans selection:bg-blue-500">
 
     <!-- شاشة الدخول المموهة (تبدو كلوحة تحكم سيرفر) -->
     <div id="loginScreen" class="flex flex-col items-center justify-center h-full w-full absolute z-50 bg-[#0f172a] transition-opacity duration-500 p-6">
@@ -48,9 +48,9 @@
     </div>
 
     <!-- شاشة المحادثة -->
-    <div id="chatScreen" class="hidden flex-col h-full w-full max-w-2xl mx-auto bg-[#efeae2] relative shadow-2xl">
+    <div id="chatScreen" class="hidden flex-col h-[100dvh] w-full max-w-2xl mx-auto bg-[#efeae2] relative shadow-2xl overflow-hidden">
         <!-- الهيدر (رأس الدردشة) -->
-        <div class="bg-[#008069] px-4 py-3 flex items-center justify-between shadow-md z-20 text-white">
+        <div class="bg-[#008069] px-4 py-3 flex items-center justify-between shadow-md z-20 text-white shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-slate-600 font-bold overflow-hidden">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
@@ -71,12 +71,12 @@
         <!-- خلفية الشات تشبه واتساب -->
         <div class="absolute inset-0 z-0 opacity-[0.06] pointer-events-none" style="background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat;"></div>
         
-        <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar pb-24 z-10">
+        <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar z-10 relative scroll-smooth">
             <!-- سيتم حقن الرسائل هنا -->
         </div>
 
         <!-- لوحة الإيموجي والمرفقات -->
-        <div id="emojiPanel" class="hidden absolute bottom-[70px] left-0 w-full bg-[#f0f2f5] border-t border-gray-300 p-2 z-10 transition-all shadow-lg h-64 flex-col">
+        <div id="emojiPanel" class="hidden w-full bg-[#f0f2f5] border-t border-gray-300 p-2 z-10 transition-all shadow-lg h-64 flex-col shrink-0">
             <div class="flex gap-2 p-2 bg-white rounded-lg mb-2 shadow-sm sticky top-0">
                 <button class="flex-1 text-sm font-bold text-gray-500 hover:text-blue-500 py-1 border-b-2 border-blue-500">الوجوه</button>
             </div>
@@ -84,7 +84,7 @@
         </div>
 
         <!-- شريط الإدخال -->
-        <div class="bg-[#f0f2f5] p-2 absolute bottom-0 w-full z-20">
+        <div class="bg-[#f0f2f5] p-2 w-full z-20 shrink-0 relative">
             <!-- مؤشر جاري التحميل للصور/الصوت -->
             <div id="uploadProgress" class="hidden w-full bg-gray-200 rounded-full h-1 mb-2">
                 <div id="progressBar" class="bg-blue-600 h-1 rounded-full w-0 transition-all duration-300"></div>
@@ -92,12 +92,12 @@
 
             <form id="messageForm" class="flex items-end gap-2">
                 <!-- زر الإيموجي -->
-                <button type="button" id="emojiBtn" class="p-3 text-gray-500 hover:text-gray-700 transition-colors">
+                <button type="button" id="emojiBtn" class="p-3 text-gray-500 hover:text-gray-700 transition-colors shrink-0">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </button>
                 
                 <!-- زر المرفقات (صورة/فيديو) -->
-                <button type="button" id="attachBtn" class="p-3 text-gray-500 hover:text-gray-700 transition-colors relative">
+                <button type="button" id="attachBtn" class="p-3 text-gray-500 hover:text-gray-700 transition-colors relative shrink-0">
                     <svg class="w-6 h-6 transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
                     <input type="file" id="fileInput" accept="image/*,video/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer hidden">
                 </button>
@@ -107,7 +107,7 @@
                 </div>
                 
                 <!-- زر الإرسال أو المايك (يتغير حسب الكتابة) -->
-                <div class="flex items-center justify-center w-12 h-12">
+                <div class="flex items-center justify-center w-12 h-12 shrink-0">
                     <button type="submit" id="sendBtn" class="hidden w-11 h-11 bg-[#00a884] text-white rounded-full flex items-center justify-center hover:bg-[#008f6f] shadow-md transition-transform active:scale-95">
                         <svg class="w-5 h-5 rtl:-scale-x-100 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
                     </button>
@@ -334,6 +334,16 @@
             els.msgInput.style.height = 'auto';
             els.msgInput.style.height = (els.msgInput.scrollHeight) + 'px';
             toggleSendMicBtn();
+        });
+
+        // تحسين للموبايل: رفع الشاشة لتجنب تغطية الكيبورد لآخر رسالة
+        els.msgInput.addEventListener('focus', () => {
+            setTimeout(() => {
+                els.msgContainer.scrollTo({
+                    top: els.msgContainer.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 300);
         });
 
         function toggleSendMicBtn() {
