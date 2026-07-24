@@ -3,60 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>System Gateway Portal</title>
+    <title>Lumière — دخول خاص</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
     <style>
+        :root{
+            --ivory:#FBF5F1;
+            --rose:#B0697A;
+            --rose-deep:#8C4C5C;
+            --plum:#33212A;
+            --gold:#C9A15A;
+            --blush:#F4E3E1;
+            --line:#E7D3CE;
+        }
+        * { font-family: 'Tajawal', sans-serif; }
+        .font-display { font-family: 'Cormorant Garamond', serif; }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
+
+        .safe-top { padding-top: env(safe-area-inset-top); }
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
         @keyframes pulse-red {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(140, 76, 92, 0.55); }
+            70% { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(140, 76, 92, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(140, 76, 92, 0); }
         }
-        .recording { animation: pulse-red 1.5s infinite; background-color: #ef4444; color: white; }
+        .recording { animation: pulse-red 1.5s infinite; background-color: var(--rose-deep) !important; color: white; }
+
+        .petal-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+
+        .luxe-input {
+            background: transparent;
+            border-bottom: 1px solid var(--line);
+            transition: border-color .25s ease;
+        }
+        .luxe-input:focus { border-color: var(--rose-deep); }
+
+        .luxe-btn {
+            background: linear-gradient(135deg, var(--rose) 0%, var(--rose-deep) 100%);
+        }
+        .luxe-btn:active { transform: scale(0.98); }
+
+        .chat-bg {
+            background-color: var(--ivory);
+            background-image: radial-gradient(circle at 1px 1px, rgba(176,105,122,0.10) 1px, transparent 0);
+            background-size: 22px 22px;
+        }
     </style>
 </head>
-<body class="bg-[#0f172a] h-[100dvh] w-screen overflow-hidden text-slate-200 font-sans selection:bg-blue-500">
+<body class="bg-[#221219] h-[100dvh] w-screen overflow-hidden text-[var(--plum)] selection:bg-[var(--rose)] selection:text-white">
 
-    <!-- شاشة الدخول المموهة -->
-    <div id="loginScreen" class="flex flex-col items-center justify-center h-full w-full absolute z-50 bg-[#0f172a] transition-opacity duration-500 p-6">
-        <div class="w-full max-w-sm border border-slate-700 bg-slate-800/50 p-8 rounded-lg shadow-2xl backdrop-blur-sm">
-            <div class="flex flex-col items-center mb-8">
-                <svg class="w-12 h-12 text-blue-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
-                <h2 class="text-xl font-mono tracking-widest text-slate-300 uppercase">Secure Gateway</h2>
-                <p class="text-xs text-slate-500 font-mono mt-1">Node Access Terminal v2.4</p>
+    <!-- شاشة الدخول -->
+    <div id="loginScreen" class="flex flex-col items-center justify-center h-full w-full absolute z-50 bg-[var(--plum)] transition-opacity duration-500 p-6 safe-top safe-bottom">
+        <div class="absolute inset-0 opacity-[0.5]" style="background: radial-gradient(circle at 50% 0%, rgba(176,105,122,0.35), transparent 60%);"></div>
+
+        <div class="relative w-full max-w-sm bg-[var(--ivory)] p-8 sm:p-10 rounded-[28px] shadow-2xl">
+            <div class="flex flex-col items-center mb-8 text-center">
+                <svg class="w-10 h-10 text-[var(--rose-deep)] mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c1.8 2.6 2.7 4.9 2.7 6.8 0 2.4-1.6 4.2-2.7 5.2-1.1-1-2.7-2.8-2.7-5.2 0-1.9.9-4.2 2.7-6.8z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v6M8.5 21h7"></path>
+                </svg>
+                <h2 class="font-display italic text-3xl text-[var(--plum)] tracking-wide">Lumière</h2>
+                <p class="text-[11px] text-[var(--rose-deep)] tracking-[0.25em] mt-2 uppercase">دخول خاص للأعضاء</p>
             </div>
-            
-            <div id="errorMessage" class="hidden mb-4 p-3 bg-red-900/50 border border-red-500/50 text-red-200 rounded text-xs text-center font-mono"></div>
-            
-            <form id="loginForm" class="space-y-5">
+
+            <div class="petal-divider mb-8"></div>
+
+            <div id="errorMessage" class="hidden mb-5 p-3 bg-[var(--blush)] border border-[var(--rose)]/40 text-[var(--rose-deep)] rounded-xl text-xs text-center"></div>
+
+            <form id="loginForm" class="space-y-6">
                 <div>
-                    <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Node ID</label>
-                    <input type="text" id="usernameInput" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded text-slate-200 focus:border-blue-500 outline-none font-mono text-sm" placeholder="e.g. root" required autocomplete="off">
+                    <label class="block text-[11px] text-[var(--rose-deep)]/80 mb-1.5 tracking-wide">اسم المستخدم</label>
+                    <input type="text" id="usernameInput" class="luxe-input w-full px-1 py-2.5 text-[var(--plum)] outline-none text-sm" placeholder="اسمك" required autocomplete="off">
                 </div>
                 <div>
-                    <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Auth Key</label>
-                    <input type="password" id="passwordInput" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded text-slate-200 focus:border-blue-500 outline-none font-mono text-sm" placeholder="••••••••" required>
+                    <label class="block text-[11px] text-[var(--rose-deep)]/80 mb-1.5 tracking-wide">كلمة المرور</label>
+                    <input type="password" id="passwordInput" class="luxe-input w-full px-1 py-2.5 text-[var(--plum)] outline-none text-sm" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-mono uppercase text-sm font-bold py-3 px-4 rounded transition-colors mt-2">
-                    Initialize Connection
+                <button type="submit" class="luxe-btn w-full text-white text-sm font-bold py-3.5 px-4 rounded-full shadow-lg shadow-[var(--rose)]/30 hover:shadow-xl transition-all mt-2">
+                    دخول
                 </button>
             </form>
         </div>
+
+        <p class="relative text-[10px] text-[var(--ivory)]/40 mt-8 tracking-widest">LUMIÈRE PRIVATE ACCESS</p>
     </div>
 
     <!-- شاشة المحادثة -->
-    <div id="chatScreen" class="hidden flex-col h-[100dvh] w-full max-w-2xl mx-auto bg-[#efeae2] relative shadow-2xl overflow-hidden">
+    <div id="chatScreen" class="hidden flex-col h-[100dvh] w-full max-w-2xl mx-auto bg-[var(--ivory)] relative shadow-2xl overflow-hidden">
         <!-- الهيدر -->
-        <div class="bg-[#008069] px-4 py-3 flex items-center justify-between shadow-md z-20 text-white shrink-0">
+        <div class="bg-gradient-to-l from-[var(--rose-deep)] to-[var(--rose)] px-4 py-3 flex items-center justify-between shadow-md z-20 text-white shrink-0 safe-top">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-slate-600 font-bold overflow-hidden">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white overflow-hidden ring-1 ring-white/30">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c1.8 2.6 2.7 4.9 2.7 6.8 0 2.4-1.6 4.2-2.7 5.2-1.1-1-2.7-2.8-2.7-5.2 0-1.9.9-4.2 2.7-6.8z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v6M8.5 21h7"></path>
+                    </svg>
                 </div>
                 <div class="flex flex-col">
-                    <h1 class="font-bold text-[16px] leading-tight" id="chatTitle">الدردشة الخاصة</h1>
-                    <p class="text-[12px] text-green-100" id="statusText">جاري الاتصال...</p>
+                    <h1 class="font-display italic font-semibold text-[19px] leading-tight" id="chatTitle">الدردشة الخاصة</h1>
+                    <p class="text-[12px] text-white/80" id="statusText">جاري الاتصال...</p>
                 </div>
             </div>
             <div class="flex gap-4">
@@ -66,44 +116,44 @@
             </div>
         </div>
 
-        <div class="absolute inset-0 z-0 opacity-[0.06] pointer-events-none" style="background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat;"></div>
-        
+        <div class="absolute inset-0 z-0 chat-bg pointer-events-none"></div>
+
         <!-- منطقة الرسائل -->
         <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar z-10 relative scroll-smooth">
         </div>
 
         <!-- لوحة الإيموجي -->
-        <div id="emojiPanel" class="hidden w-full bg-[#f0f2f5] border-t border-gray-300 p-2 z-10 transition-all shadow-lg h-64 flex-col shrink-0">
+        <div id="emojiPanel" class="hidden w-full bg-[var(--blush)] border-t border-[var(--line)] p-2 z-10 transition-all shadow-lg h-64 flex-col shrink-0">
             <div class="grid grid-cols-7 sm:grid-cols-10 gap-2 overflow-y-auto no-scrollbar p-1 pb-4" id="emojiGrid"></div>
         </div>
 
         <!-- شريط الإدخال -->
-        <div class="bg-[#f0f2f5] p-2 w-full z-20 shrink-0 relative">
-            <div id="uploadProgress" class="hidden w-full bg-gray-200 rounded-full h-1 mb-2">
-                <div id="progressBar" class="bg-blue-600 h-1 rounded-full w-0 transition-all duration-300"></div>
+        <div class="bg-[var(--blush)] p-2 w-full z-20 shrink-0 relative safe-bottom">
+            <div id="uploadProgress" class="hidden w-full bg-[var(--line)] rounded-full h-1 mb-2">
+                <div id="progressBar" class="bg-[var(--rose-deep)] h-1 rounded-full w-0 transition-all duration-300"></div>
             </div>
 
             <form id="messageForm" class="flex items-end gap-2">
-                <button type="button" id="emojiBtn" class="p-3 text-gray-500 hover:text-gray-700 transition-colors shrink-0">
+                <button type="button" id="emojiBtn" class="p-3 text-[var(--rose-deep)]/70 hover:text-[var(--rose-deep)] transition-colors shrink-0">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </button>
                 
-                <button type="button" id="attachBtn" class="p-3 text-gray-500 hover:text-gray-700 transition-colors relative shrink-0">
+                <button type="button" id="attachBtn" class="p-3 text-[var(--rose-deep)]/70 hover:text-[var(--rose-deep)] transition-colors relative shrink-0">
                     <svg class="w-6 h-6 transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
                     <!-- رفع الصور فقط لتقليل الحجم -->
                     <input type="file" id="fileInput" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                 </button>
                 
-                <div class="flex-1 bg-white rounded-3xl flex items-center min-h-[44px] shadow-sm px-2">
-                    <textarea id="messageInput" class="w-full bg-transparent resize-none px-2 py-3 focus:outline-none text-[15px] max-h-24 no-scrollbar text-gray-800" placeholder="المراسلة..." rows="1" dir="auto"></textarea>
+                <div class="flex-1 bg-white rounded-3xl flex items-center min-h-[44px] shadow-sm px-2 ring-1 ring-[var(--line)]">
+                    <textarea id="messageInput" class="w-full bg-transparent resize-none px-2 py-3 focus:outline-none text-[15px] max-h-24 no-scrollbar text-[var(--plum)]" placeholder="المراسلة..." rows="1" dir="auto"></textarea>
                 </div>
                 
                 <div class="flex items-center justify-center w-12 h-12 shrink-0">
-                    <button type="submit" id="sendBtn" class="hidden w-11 h-11 bg-[#00a884] text-white rounded-full flex items-center justify-center hover:bg-[#008f6f] shadow-md transition-transform active:scale-95">
+                    <button type="submit" id="sendBtn" class="hidden w-11 h-11 luxe-btn text-white rounded-full flex items-center justify-center shadow-md transition-transform active:scale-95">
                         <svg class="w-5 h-5 rtl:-scale-x-100 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
                     </button>
                     
-                    <button type="button" id="micBtn" class="w-11 h-11 bg-[#00a884] text-white rounded-full flex items-center justify-center hover:bg-[#008f6f] shadow-md transition-all active:scale-95">
+                    <button type="button" id="micBtn" class="w-11 h-11 luxe-btn text-white rounded-full flex items-center justify-center shadow-md transition-all active:scale-95">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"></path></svg>
                     </button>
                 </div>
@@ -167,7 +217,7 @@
 
         EMOJI_LIST.forEach(emoji => {
             const span = document.createElement('span');
-            span.className = 'text-2xl cursor-pointer hover:bg-gray-200 p-1 rounded text-center';
+            span.className = 'text-2xl cursor-pointer hover:bg-[#F4E3E1] p-1 rounded-lg text-center transition-colors';
             span.textContent = emoji;
             span.onclick = () => { els.msgInput.value += emoji; toggleSendMicBtn(); els.msgInput.focus(); };
             els.emojiGrid.appendChild(span);
@@ -188,7 +238,7 @@
                     initChat();
                 }, 500);
             } else {
-                els.errorMsg.textContent = "ACCESS DENIED. INVALID CREDENTIALS.";
+                els.errorMsg.textContent = "بيانات الدخول غير صحيحة، حاول مرة أخرى";
                 els.errorMsg.classList.remove('hidden');
             }
         };
@@ -245,7 +295,7 @@
 
         function renderMessage(msg, isMe) {
             const timeString = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) : '';
-            let seenStatus = isMe ? (msg.seen ? `<svg class="w-4 h-4 text-blue-500 inline ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"></path></svg>` : `<svg class="w-4 h-4 text-gray-400 inline ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg>`) : '';
+            let seenStatus = isMe ? (msg.seen ? `<svg class="w-4 h-4 text-[#8C4C5C] inline ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"></path></svg>` : `<svg class="w-4 h-4 text-gray-400 inline ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg>`) : '';
 
             let contentHTML = '';
             if (msg.type === 'text') {
@@ -259,7 +309,7 @@
 
             const msgDiv = document.createElement('div');
             msgDiv.className = `flex w-full mb-1 ${isMe ? 'justify-end' : 'justify-start'}`;
-            const bubbleStyle = isMe ? 'bg-[#dcf8c6] text-gray-800 rounded-lg rounded-tr-none shadow-sm' : 'bg-white text-gray-800 rounded-lg rounded-tl-none shadow-sm';
+            const bubbleStyle = isMe ? 'bg-[#F4E3E1] text-[#33212A] rounded-2xl rounded-tr-md shadow-sm ring-1 ring-[#E7D3CE]' : 'bg-white text-[#33212A] rounded-2xl rounded-tl-md shadow-sm ring-1 ring-[#E7D3CE]';
             
             msgDiv.innerHTML = `
                 <div class="max-w-[85%] relative px-2.5 pt-2 pb-1.5 ${bubbleStyle}">
